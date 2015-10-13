@@ -1,0 +1,9 @@
+{
+"accountNumber": "5031123123",
+"company_id": "1",
+"password": "bank1",
+"routingNumber": "999999989",
+"source": "UI",
+"source_id": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzMCIsImlzcyI6Imh0dHA6XC9cL3BsYXRmb3JtLmdvZmFzdHBheS5jb20iLCJpYXQiOjE0MjYwOTU1Mzh9.nbLl1pB1JbMzh77P09-NpqcuT3lesjkfVmWMTspUReU",
+"username": "fastpay-dev.bank1"
+}

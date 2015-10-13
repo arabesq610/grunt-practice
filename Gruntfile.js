@@ -1,79 +1,77 @@
+/*
+ * grunt-checkFileSize
+ * https://github.com/arabesq610/grunt-practice
+ *
+ * Copyright (c) 2015 Elise Linn
+ * Licensed under the MIT license.
+ */
+
 'use strict';
 
 module.exports = function (grunt) {
 
+    // Project configuration.
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
-        clean: {
-            options: {
-            },
-            files: ['./dist/**/*']
-        },
         jshint: {
+            all: [
+                'Gruntfile.js',
+                'tasks/*.js',
+                '<%= nodeunit.tests %>'
+            ],
             options: {
-            },
-            files: ['./src/js']
-        },
-        uglify: {
-            target: {
-                files: [{
-                    expand: true,
-                    cwd: './src/js/',
-                    src: '**/*.js',
-                    dest: './dist/js/'
-                }],
-                options: {
-                    mangle: true,
-                    compress: {
-                        drop_console: true
-                    }
-                }
+                jshintrc: '.jshintrc'
             }
         },
-        htmlhint: {
-            templates: {
-                options: {
-                    'attr-lower-case': true,
-                    'attr-value-not-empty': false,
-                    'tag-pair': true,
-                    'tag-self-close': true,
-                    'tagname-lowercase': true,
-                    'id-class-value': true,
-                    'id-class-unique': true,
-                    'src-not-empty': true,
-                    'img-alt-required': true
-                },
-                src: [
-                    './src/**/*.html'
-                ]
-            }
+
+        // Before generating any new files, remove any previously-created files.
+        clean: {
+            tests: ['tmp']
         },
-        htmlmin: {
-            dev: {
-                options: {
-                    removeEmptyAttributes: false,
-                    removeEmptyElements: true,
-                    removeRedundantAttributes: true,
-                    removeComments: true,
-                    removeOptionalTags: true,
-                    collapseWhitespace: true
-                },
-                files: [{
-                    expand: true,
-                    cwd: './src',
-                    dest: './dist',
-                    src: ['**/*.html']
-//                    './dist/index.html': './src/index.html'
-                }]
+
+        // Configuration to be run (and then tested).
+        checkFileSize: {
+            options: {
+                folderToScan: './files',
+                debug: true
             }
+            // default_options: {
+            //     options: {
+            //     },
+            //     files: {
+            //         'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123']
+            //     }
+            // },
+            // custom_options: {
+            //     options: {
+            //         separator: ': ',
+            //         punctuation: ' !!!'
+            //     },
+            //     files: {
+            //         'tmp/custom_options': ['test/fixtures/testing', 'test/fixtures/123']
+            //     }
+            // }
+        },
+
+        // Unit tests.
+        nodeunit: {
+            tests: ['test/*_test.js']
         }
+
     });
 
-    grunt.loadNpmTasks('grunt-contrib-clean');
+    // Actually load this plugin's task(s).
+    grunt.loadTasks('tasks');
+
+    // These plugins provide necessary tasks.
     grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-htmlhint');
-    grunt.loadNpmTasks('grunt-contrib-htmlmin');
-    grunt.loadNpmTasks('grunt-contrib-less');
-    grunt.registerTask('default', ['clean', 'jshint', 'uglify', 'htmlhint', 'htmlmin']);
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-nodeunit');
+
+    // Whenever the "test" task is run, first clean the "tmp" dir, then run this
+    // plugin's task(s), then test the result.
+    grunt.registerTask('test', ['clean', 'checkFileSize', 'nodeunit']);
+
+    // By default, lint and run all tests.
+    grunt.registerTask('default', ['jshint', 'test']);
+
 };
